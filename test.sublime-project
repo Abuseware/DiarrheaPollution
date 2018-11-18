@@ -1,0 +1,61 @@
+{
+  "build_systems":
+  [
+    {
+      "cmd":
+      [
+        "make"
+      ],
+      "name": "Make",
+      "variants":
+      [
+        {
+          "cmd":
+          [
+            "make",
+            "-B"
+          ],
+          "name": "Rebuild",
+        },
+        {
+          "cmd":
+          [
+            "make",
+            "clean"
+          ],
+          "name": "Clean",
+        },
+      ],
+      "working_dir": "${project_path}"
+    },
+  ],
+  "folders":
+  [
+    {
+      "file_include_patterns":
+      [
+        "*.s",
+      ],
+      "name": "Sources",
+      "path": "./src"
+    },
+    {
+      "file_include_patterns":
+      [
+        "*.inc",
+      ],
+      "name": "Headers",
+      "path": "./include"
+    },
+    {
+      "file_include_patterns":
+      [
+        "Makefile",
+        "README.md"
+      ],
+      "folder_exclude_patterns": [ "*" ],
+      "name": "/",
+      "path": "."
+    }
+  ]
+}

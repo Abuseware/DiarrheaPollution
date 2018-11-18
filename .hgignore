@@ -1,0 +1,10 @@
+syntax: glob
+obj/*
+*.nes
+*.map
+*.sym
+*.dbg
+*~
+.DS_Store
+*.sublime-workspace
+*.orig
