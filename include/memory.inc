@@ -1,5 +1,6 @@
 .global Setup
 .global MainLoop
+.global VBlank
 
 .globalzp frames
 .globalzp framesHigh

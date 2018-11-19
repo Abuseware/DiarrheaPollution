@@ -1,10 +1,12 @@
 .include "nes.inc"
 .include "memory.inc"
 
+.include "nsf/driver.s"
+
 .segment "ZEROPAGE"
 vector0: .res 1
 
-.segment "STARTUP"
+.segment "CODE"
 
 Setup:
 
@@ -15,9 +17,15 @@ Setup:
   stx SPRITE_0+SPRITE_ID
   stx SPRITE_0+SPRITE_FLAGS
 
+  lda #0
+  jsr ft_music_init
+
 rts
 
 MainLoop:
+  lda #1
+  bit framesLow
+  bne @ScrollEnd
   lda #2
   bit framesHigh
   bne @ScrollRight
@@ -84,4 +92,8 @@ MainLoop:
   sta SPRITE_0+SPRITE_FLAGS
 
 
+rts
+
+VBlank:
+  jsr ft_music_play
 rts

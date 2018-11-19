@@ -12,7 +12,7 @@
 .byte 0 ; chr/prog size 2 ; 9
 .byte 7 ; RAM ; 10
 .byte 0 ; VRAM ; 11
-.byte 1 ; 1 - PAL, 0 - NTSC, 1/3 - dual ;12
+.byte 0 ; 1 - PAL, 0 - NTSC, 1/3 - dual ;12
 .res 3, 0
 
 .segment "ZEROPAGE"
@@ -201,6 +201,7 @@ nmi:
   lda scroll_y
   sta PPU_VRAM_ADDR1
 
+  jsr VBlank
 
   rti
 

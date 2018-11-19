@@ -1,7 +1,7 @@
 AS=ca65
 LD=ld65
 
-ASFLAGS=-Iinclude -tnes -g
+ASFLAGS=-Iinclude -Ilib -tnes -g -DINC_MUSIC
 LDFLAGS=-tnes
 
 srcdir = src
@@ -19,12 +19,12 @@ $(objdir)/%.o: $(srcdir)/%.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 %.nes:
-	$(LD) $(LDFLAGS) -Ln $(@:.nes=.sym) -m $(@:.nes=.map) --dbgfile $(@:.nes=.dbg) -o $@ $^
+	$(LD) $(LDFLAGS) --dbgfile $(@:.nes=.dbg) -o $@ $^
 
 all: test.nes
 
 clean:
-	rm -f test.nes
+	rm -f test.nes test.dbg
 	rm -f $(obj)
 
 test.nes: $(obj)

@@ -14,3 +14,7 @@ Nestopia.
 
 ### Real machine:
 Burn on NROM-256 style cart, or use flash card adapter.
+
+## Credits
+Music: Tallboyy - DuckTales Moon Stage (Cover)
+NSF Driver: jsr (http://www.famitracker.com)
