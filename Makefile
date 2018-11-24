@@ -1,7 +1,7 @@
 AS=ca65
 LD=ld65
 
-ASFLAGS=-Iinclude -Ilib -tnes -g -DINC_MUSIC
+ASFLAGS=-Iinclude -I. -tnes -g
 LDFLAGS=-tnes
 
 srcdir = src

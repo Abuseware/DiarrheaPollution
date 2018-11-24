@@ -1,9 +1,10 @@
 .include "nes.inc"
 .include "memory.inc"
 
-.include "nsf/driver.s"
+.include "lib/nsf/driver.s"
+.include "assets/music.asm"
 
-.segment "ZEROPAGE"
+.segment "DATA"
 vector0: .res 1
 
 .segment "CODE"

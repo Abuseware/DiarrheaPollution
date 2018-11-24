@@ -15,18 +15,6 @@
 .byte 0 ; 1 - PAL, 0 - NTSC, 1/3 - dual ;12
 .res 3, 0
 
-.segment "ZEROPAGE"
-ptr:
-ptrLow: .res 1
-ptrHigh: .res 1
-
-frames:
-framesLow: .res 1
-framesHigh: .res 1
-
-scroll_x: .res 1
-scroll_y: .res 1
-
 .segment "RODATA"
 pallete: .incbin "assets/joker.dat"
 joker: .incbin "assets/joker.nam"
@@ -34,7 +22,20 @@ sprites_rom:
   .byte $8, $0, $00, $8
 .res 256 - (* - sprites_rom), $fe
 
+.segment "ZEROPAGE"
+ptr:
+ptrLow: .res 1
+ptrHigh: .res 1
+
+busy: .res 1
+
 .segment "DATA"
+frames:
+framesLow: .res 1
+framesHigh: .res 1
+
+scroll_x: .res 1
+scroll_y: .res 1
 
 .segment "STARTUP"
 reset:
@@ -62,6 +63,28 @@ reset:
     sta $500, x
     sta $600, x
     sta $700, x
+
+    sta $6000, x
+    sta $6100, x
+    sta $6200, x
+    sta $6300, x
+    sta $6400, x
+    sta $6500, x
+    sta $6600, x
+    sta $6700, x
+    sta $6800, x
+    sta $6900, x
+
+    sta $7000, x
+    sta $7100, x
+    sta $7200, x
+    sta $7300, x
+    sta $7400, x
+    sta $7500, x
+    sta $7600, x
+    sta $7700, x
+    sta $7800, x
+    sta $7900, x
 
     inx
     bne @ClearMem
@@ -159,9 +182,12 @@ reset:
 
   @loop:
   jsr MainLoop
+  lda #1
+  sta busy
   @wait:
-  bit PPU_STATUS
-  bpl @wait
+  lda #1
+  cmp busy
+  beq @wait
   jmp @loop
 
 
@@ -171,6 +197,9 @@ VBlankWait:
   rts
 
 nmi:
+  lda #1
+  sta busy
+
   inc framesLow
   bne @noHigh
   inc framesHigh
@@ -203,6 +232,8 @@ nmi:
 
   jsr VBlank
 
+  lda #0
+  sta busy
   rti
 
 .segment "VECTORS"
@@ -210,6 +241,5 @@ nmi:
 .word reset
 .word 0
 
-.segment "SAMPLES"
 .segment "CHARS"
 .incbin "assets/joker.chr"

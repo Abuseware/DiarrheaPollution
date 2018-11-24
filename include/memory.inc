@@ -2,11 +2,11 @@
 .global MainLoop
 .global VBlank
 
-.globalzp frames
-.globalzp framesHigh
-.globalzp framesLow
-.globalzp scroll_x
-.globalzp scroll_y
+.global frames
+.global framesHigh
+.global framesLow
+.global scroll_x
+.global scroll_y
 
 
 SPRITES = $200
