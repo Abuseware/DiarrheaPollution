@@ -35,6 +35,7 @@
       "file_include_patterns":
       [
         "*.s",
+        "*.c"
       ],
       "name": "Sources",
       "path": "./src"
@@ -43,6 +44,7 @@
       "file_include_patterns":
       [
         "*.inc",
+        "*.h"
       ],
       "name": "Headers",
       "path": "./include"

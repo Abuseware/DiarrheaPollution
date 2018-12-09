@@ -1,6 +1,9 @@
 .include "nes.inc"
 .include "memory.inc"
 
+.include "lib/nsf/driver.s"
+.include "assets/music.asm"
+
 .segment "HEADER"
 ; NROM-256
 .byte $4e,$45,$53,$1a ;0-3
@@ -16,11 +19,8 @@
 .res 3, 0
 
 .segment "RODATA"
-pallete: .incbin "assets/joker.dat"
+palette: .incbin "assets/joker.dat"
 joker: .incbin "assets/joker.nam"
-sprites_rom:
-  .byte $8, $0, $00, $8
-.res 256 - (* - sprites_rom), $fe
 
 .segment "ZEROPAGE"
 ptr:
@@ -30,12 +30,12 @@ ptrHigh: .res 1
 busy: .res 1
 
 .segment "DATA"
-frames:
-framesLow: .res 1
-framesHigh: .res 1
+_frames:
+_framesLow: .res 1
+_framesHigh: .res 1
 
-scroll_x: .res 1
-scroll_y: .res 1
+_scroll_x: .res 1
+_scroll_y: .res 1
 
 .segment "STARTUP"
 reset:
@@ -86,91 +86,18 @@ reset:
     sta $7800, x
     sta $7900, x
 
+    lda #$fe
+    sta $200, x
+
     inx
     bne @ClearMem
 
   jsr VBlankWait
 
-  ;write pallete to 0x3f00
-  LoadPallete:
-    lda PPU_STATUS
-    lda #$3f
-    sta PPU_VRAM_ADDR2
-    lda #$00
-    sta PPU_VRAM_ADDR2
+  jsr _Setup
 
-    ldx #0
-    @LoadPalleteLoop:
-      lda pallete, x
-      sta PPU_VRAM_IO
-
-      inx
-      cpx #32
-      bne @LoadPalleteLoop
-
-
-  ;load nametable at 0x2000
-  LoadNameTable:
-    lda PPU_STATUS
-    lda #$20
-    sta PPU_VRAM_ADDR2
-    lda #0
-    sta PPU_VRAM_ADDR2
-
-    lda #>joker
-    sta ptrHigh
-    lda #<joker
-    sta ptrLow
-    ldy #0
-    ldx #0
-    @LoadNameTableLoop:
-      lda (ptr),y
-      sta PPU_VRAM_IO
-
-      iny
-      cpy #0
-      bne @LoadNameTableLoop
-    inc ptrHigh
-    inx
-    cpx #4
-    bne @LoadNameTableLoop
-
-  ;load nametable at 0x2400
-  LoadNameTable2:
-    lda PPU_STATUS
-    lda #$24
-    sta PPU_VRAM_ADDR2
-    lda #0
-    sta PPU_VRAM_ADDR2
-
-    lda #>joker
-    sta ptrHigh
-    lda #<joker
-    sta ptrLow
-    ldy #0
-    ldx #0
-    @LoadNameTableLoop2:
-      lda (ptr),y
-      sta PPU_VRAM_IO
-
-      iny
-      cpy #0
-      bne @LoadNameTableLoop2
-    inc ptrHigh
-    inx
-    cpx #4
-    bne @LoadNameTableLoop2
-
-  LoadSprites:
-    ldx #$0
-    @LoadSpritesLoop:
-      lda sprites_rom, x
-      sta $0200, x
-      inx
-      cpx #$0
-      bne @LoadSpritesLoop
-
-  jsr Setup
+  lda #0
+  jsr ft_music_init
 
   ;enable NMI, sprites 1, bg 0
   lda #(1<<7 | 1<<4)
@@ -181,7 +108,7 @@ reset:
   sta PPU_CTRL2
 
   @loop:
-  jsr MainLoop
+  jsr _MainLoop
   lda #1
   sta busy
   @wait:
@@ -200,9 +127,9 @@ nmi:
   lda #1
   sta busy
 
-  inc framesLow
+  inc _framesLow
   bne @noHigh
-  inc framesHigh
+  inc _framesHigh
   @noHigh:
 
   ;transfer sprites
@@ -225,12 +152,12 @@ nmi:
   sta PPU_VRAM_ADDR2
 
   ;Scroll
-  lda scroll_x
+  lda _scroll_x
   sta PPU_VRAM_ADDR1
-  lda scroll_y
+  lda _scroll_y
   sta PPU_VRAM_ADDR1
 
-  jsr VBlank
+  jsr ft_music_play
 
   lda #0
   sta busy
